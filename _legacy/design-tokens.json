@@ -1,0 +1,880 @@
+{
+  "color": {
+    "foundation": {
+      "neutral": {
+        "neutral-50": {
+          "description": "Lightest neutral gray, for subtle backgrounds and borders",
+          "type": "color",
+          "value": "#e7e7eaff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:daa4eb57b0fe3c40b331d51a89098a0a936ed479,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-100": {
+          "description": "Light neutral gray, for disabled text and placeholders",
+          "type": "color",
+          "value": "#b3b6bdff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:e1bca51fb560ae319d514e3a4aafec2755799220,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-200": {
+          "description": "Mid-light neutral gray, for borders and dividers",
+          "type": "color",
+          "value": "#8e929dff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:98b5be401f2c1f5e2c0481c3fe85fbfe5b4a0816,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-300": {
+          "description": "Mid neutral gray, for secondary text and icons",
+          "type": "color",
+          "value": "#5b6070ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:3c7d2370183a64316f6c933e96244048da5d20cd,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-400": {
+          "description": "Dark neutral gray, for body text on light backgrounds",
+          "type": "color",
+          "value": "#3b4155ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:0164d0cb0b33217fc84dddbe5fb1b44b5c54ca0d,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-500": {
+          "description": "Very dark neutral, near-black for headings and emphasis",
+          "type": "color",
+          "value": "#0a122aff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:047dd7922b005df977bdaa008e7f1df313a8ea13,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-600": {
+          "description": "Darker neutral, for dark mode surfaces",
+          "type": "color",
+          "value": "#091026ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:ca002035542e286ee9881872128938203ad2a1ea,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-700": {
+          "description": "Deep neutral, for dark mode backgrounds",
+          "type": "color",
+          "value": "#070d1eff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:e212fa922e23c2cbd609f58fd74683220abc3f9e,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-800": {
+          "description": "Very deep neutral, for dark mode card backgrounds",
+          "type": "color",
+          "value": "#060a17ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:002c23045a5b0c40312d8dc025c94ee4b0a51be2,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "neutral-900": {
+          "description": "Darkest neutral, for deep dark mode backgrounds",
+          "type": "color",
+          "value": "#040812ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:93c6bffb6a2b01d5020b0f0a41de6e0f66bd165e,",
+              "exportKey": "color"
+            }
+          }
+        }
+      },
+      "red": {
+        "red-50": {
+          "description": "Lightest red tint, for error backgrounds and alerts",
+          "type": "color",
+          "value": "#fce8e8ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:f0451ed60215da36e7068b877dcfee7eb5f3f835,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-100": {
+          "description": "Light red, for hover states on error surfaces",
+          "type": "color",
+          "value": "#f4b9b8ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:afaae1d3d3a4e4c02a875c1009ae385de6714b1b,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-200": {
+          "description": "Mid-light red, for borders on error states",
+          "type": "color",
+          "value": "#ef9796ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:95ffdd183b72d3fad4400450c10fd13dbc260322,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-300": {
+          "description": "Mid red, for secondary error text and icons",
+          "type": "color",
+          "value": "#e86766ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:113c66d8a27addbf3e78ed5e465e3d78ec92c6ec,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-400": {
+          "description": "Strong red, for destructive action buttons",
+          "type": "color",
+          "value": "#e44948ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:6deeeba101c2540605069c03ccea0c30facc62c4,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-500": {
+          "description": "Primary red, for error states and critical alerts",
+          "type": "color",
+          "value": "#dd1c1aff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:70cca9d7c56ffbb8bea0657718adc14ac5a38671,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-600": {
+          "description": "Dark red, for pressed state on destructive buttons",
+          "type": "color",
+          "value": "#c91918ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:ca50d8f9466522ccd295f8cd60c2ac3f8ee0283a,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-700": {
+          "description": "Deep red, for dark mode error text",
+          "type": "color",
+          "value": "#9d1412ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:cad661f00bb43c536defa6222ff8896b09f19df5,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-800": {
+          "description": "Very deep red, for dark mode error backgrounds",
+          "type": "color",
+          "value": "#7a0f0eff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:e6ba59bb1647af9d7b05715dc42f068203d650d3,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "red-900": {
+          "description": "Darkest red, for deep dark mode error surfaces",
+          "type": "color",
+          "value": "#5d0c0bff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:3f062845cffc855baa69db4a4d7e09957e53bfd4,",
+              "exportKey": "color"
+            }
+          }
+        }
+      },
+      "warm": {
+        "warm-50": {
+          "description": "Lightest warm tone, for page backgrounds",
+          "type": "color",
+          "value": "#fffefaff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:6915dc07ab1129b11d9e9f08cc689f890e00b91b,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-100": {
+          "description": "Light warm, for card and surface backgrounds",
+          "type": "color",
+          "value": "#fffbf0ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:da4d92e4ebd643180c08ca048da985359244d219,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-200": {
+          "description": "Subtle warm tint, for hover states on surfaces",
+          "type": "color",
+          "value": "#fff9e9ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:6a7a39c318ffc2ca720f0051d7f89b6ba8e654f1,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-300": {
+          "description": "Light warm accent, for badges and highlights",
+          "type": "color",
+          "value": "#fff6e0ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:d3c5d3ff82615afbd6b3adacae99d256786b95f7,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-400": {
+          "description": "Medium warm accent, for secondary buttons and tags",
+          "type": "color",
+          "value": "#fff4d9ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:e5f35b6f1d841ac86e65b5bf009455fd85299e69,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-500": {
+          "description": "Primary warm tone, for brand accent and CTAs",
+          "type": "color",
+          "value": "#fff1d0ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:9582e25b2501657b52d330a018575abaac4cca5b,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-600": {
+          "description": "Darker warm, for pressed state on warm accents",
+          "type": "color",
+          "value": "#e8dbbdff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:1ead6190f0b9f06937681b412f5e0a8b225b78c2,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-700": {
+          "description": "Deep warm, for muted text on warm backgrounds",
+          "type": "color",
+          "value": "#b5ab94ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:2de8f327901f692c14b9edfe24759a3827d8e2e0,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-800": {
+          "description": "Very deep warm, for dark mode warm text",
+          "type": "color",
+          "value": "#8c8572ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:4d2bc51217e9f058a0765e7d55115c4a3ccd9daf,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "warm-900": {
+          "description": "Darkest warm, for deep dark mode warm accents",
+          "type": "color",
+          "value": "#6b6557ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:8efe34617ba5039cada2f2be5ae7baeedd787c41,",
+              "exportKey": "color"
+            }
+          }
+        }
+      },
+      "yellow": {
+        "yellow-50": {
+          "description": "Lightest yellow, for warning backgrounds",
+          "type": "color",
+          "value": "#fefae6ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:409d5118f798e91e36a481a2b8ce07bf7ef56f8c,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-100": {
+          "description": "Light yellow, for hover states on warning surfaces",
+          "type": "color",
+          "value": "#faeeb2ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:965c5278e2825c964a6bfbbf3dee4fabc659f63b,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-200": {
+          "description": "Mid-light yellow, for borders on warning states",
+          "type": "color",
+          "value": "#f8e68dff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:9077e5d30cc990db1dab65636dc3001849f98b49,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-300": {
+          "description": "Mid yellow, for secondary warning text and icons",
+          "type": "color",
+          "value": "#f5da5aff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:58ca5846277b88dadf1faa6e9207789a14c222f3,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-400": {
+          "description": "Strong yellow, for warning buttons",
+          "type": "color",
+          "value": "#f3d339ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:0ece24abd93e711a20738d9f37655c6856120a50,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-500": {
+          "description": "Primary yellow, for warnings and attention indicators",
+          "type": "color",
+          "value": "#f0c808ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:05efbad48173c5b95bf66c63aa56b1011c23c42e,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-600": {
+          "description": "Dark yellow, for pressed state on warning buttons",
+          "type": "color",
+          "value": "#dab607ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:7d394a5ebabe7905c895c47aa95c9ff475b2ef48,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-700": {
+          "description": "Deep yellow, for dark mode warning text",
+          "type": "color",
+          "value": "#aa8e06ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:f9f6d17d53b8742c1129cc0b0f8fba1444e6cc7d,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-800": {
+          "description": "Very deep yellow, for dark mode warning backgrounds",
+          "type": "color",
+          "value": "#846e04ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:f62a27a67161144ece00076580e54e6ae6d82d44,",
+              "exportKey": "color"
+            }
+          }
+        },
+        "yellow-900": {
+          "description": "Darkest yellow, for deep dark mode warning surfaces",
+          "type": "color",
+          "value": "#655403ff",
+          "blendMode": "normal",
+          "extensions": {
+            "org.lukasoppermann.figmaDesignTokens": {
+              "styleId": "S:d0d2a985d47ae69bbcee114632a3adc5de9fba55,",
+              "exportKey": "color"
+            }
+          }
+        }
+      }
+    }
+  },
+  "typography": {
+    "font-family-sans": {
+      "description": "Primary sans-serif font for body text and UI elements",
+      "type": "fontFamily",
+      "value": "Work Sans"
+    },
+    "font-family-display": {
+      "description": "Display font for headings and hero text",
+      "type": "fontFamily",
+      "value": "Dela Gothic One"
+    },
+    "font-family-mono": {
+      "description": "Monospace font for code snippets and technical content",
+      "type": "fontFamily",
+      "value": "JetBrains Mono"
+    },
+    "font-size-xs": {
+      "description": "Extra small text, for captions and fine print",
+      "type": "dimension",
+      "value": "0.640rem"
+    },
+    "font-size-sm": {
+      "description": "Small text, for labels and secondary content",
+      "type": "dimension",
+      "value": "0.800rem"
+    },
+    "font-size-base": {
+      "description": "Base text size, for body copy and default content",
+      "type": "dimension",
+      "value": "1.000rem"
+    },
+    "font-size-lg": {
+      "description": "Large text, for lead paragraphs and emphasis",
+      "type": "dimension",
+      "value": "1.250rem"
+    },
+    "font-size-xl": {
+      "description": "Extra large text, for subheadings",
+      "type": "dimension",
+      "value": "1.563rem"
+    },
+    "font-size-2xl": {
+      "description": "2x large text, for section headings",
+      "type": "dimension",
+      "value": "1.953rem"
+    },
+    "font-size-3xl": {
+      "description": "3x large text, for page titles",
+      "type": "dimension",
+      "value": "2.441rem"
+    },
+    "font-size-4xl": {
+      "description": "4x large text, for hero headings",
+      "type": "dimension",
+      "value": "3.052rem"
+    },
+    "font-size-5xl": {
+      "description": "5x large text, for large hero headings",
+      "type": "dimension",
+      "value": "3.815rem"
+    },
+    "font-size-6xl": {
+      "description": "6x large text, for display headings on landing pages",
+      "type": "dimension",
+      "value": "4.768rem"
+    },
+    "font-size-7xl": {
+      "description": "7x large text, for maximum impact display headings",
+      "type": "dimension",
+      "value": "5.960rem"
+    },
+    "font-weight-light": {
+      "description": "Light weight, for subtle decorative text",
+      "type": "fontWeight",
+      "value": 300
+    },
+    "font-weight-regular": {
+      "description": "Regular weight, for body text and default content",
+      "type": "fontWeight",
+      "value": 400
+    },
+    "font-weight-medium": {
+      "description": "Medium weight, for labels and emphasis",
+      "type": "fontWeight",
+      "value": 500
+    },
+    "font-weight-semibold": {
+      "description": "Semibold weight, for subheadings and strong emphasis",
+      "type": "fontWeight",
+      "value": 600
+    },
+    "font-weight-bold": {
+      "description": "Bold weight, for headings and primary emphasis",
+      "type": "fontWeight",
+      "value": 700
+    },
+    "font-weight-extrabold": {
+      "description": "Extra bold weight, for hero text and maximum emphasis",
+      "type": "fontWeight",
+      "value": 800
+    },
+    "line-height-none": {
+      "description": "No extra line height, for tight display text",
+      "type": "number",
+      "value": 1
+    },
+    "line-height-tight": {
+      "description": "Tight line height, for headings and short text blocks",
+      "type": "number",
+      "value": 1.25
+    },
+    "line-height-snug": {
+      "description": "Snug line height, for subheadings and compact paragraphs",
+      "type": "number",
+      "value": 1.375
+    },
+    "line-height-normal": {
+      "description": "Normal line height, for body text and readable content",
+      "type": "number",
+      "value": 1.5
+    },
+    "line-height-relaxed": {
+      "description": "Relaxed line height, for long-form reading and accessibility",
+      "type": "number",
+      "value": 1.625
+    },
+    "line-height-loose": {
+      "description": "Loose line height, for maximum readability in dense content",
+      "type": "number",
+      "value": 2
+    },
+    "letter-spacing-tighter": {
+      "description": "Very tight letter spacing, for large display text",
+      "type": "dimension",
+      "value": "-0.05em"
+    },
+    "letter-spacing-tight": {
+      "description": "Tight letter spacing, for headings",
+      "type": "dimension",
+      "value": "-0.025em"
+    },
+    "letter-spacing-normal": {
+      "description": "Normal letter spacing, for body text",
+      "type": "dimension",
+      "value": "0em"
+    },
+    "letter-spacing-wide": {
+      "description": "Wide letter spacing, for small caps and labels",
+      "type": "dimension",
+      "value": "0.025em"
+    },
+    "letter-spacing-wider": {
+      "description": "Wider letter spacing, for button text and uppercase labels",
+      "type": "dimension",
+      "value": "0.05em"
+    },
+    "letter-spacing-widest": {
+      "description": "Widest letter spacing, for very small uppercase text",
+      "type": "dimension",
+      "value": "0.1em"
+    }
+  },
+  "spacing": {
+    "spacing-0": {
+      "description": "No spacing, for zero gaps",
+      "type": "dimension",
+      "value": "0"
+    },
+    "spacing-0.5": {
+      "description": "Extra extra small spacing, for micro adjustments",
+      "type": "dimension",
+      "value": "0.125rem"
+    },
+    "spacing-1": {
+      "description": "Extra small spacing, for tight gaps and padding",
+      "type": "dimension",
+      "value": "0.25rem"
+    },
+    "spacing-1.5": {
+      "description": "Small-medium spacing, for compact element gaps",
+      "type": "dimension",
+      "value": "0.375rem"
+    },
+    "spacing-2": {
+      "description": "Small spacing, for padding and gaps between related elements",
+      "type": "dimension",
+      "value": "0.5rem"
+    },
+    "spacing-2.5": {
+      "description": "Medium-small spacing, for element grouping",
+      "type": "dimension",
+      "value": "0.625rem"
+    },
+    "spacing-3": {
+      "description": "Medium spacing, for standard padding and gaps",
+      "type": "dimension",
+      "value": "0.75rem"
+    },
+    "spacing-3.5": {
+      "description": "Medium-large spacing, for section separation",
+      "type": "dimension",
+      "value": "0.875rem"
+    },
+    "spacing-4": {
+      "description": "Large spacing, for card padding and component gaps",
+      "type": "dimension",
+      "value": "1rem"
+    },
+    "spacing-5": {
+      "description": "Extra large spacing, for section padding",
+      "type": "dimension",
+      "value": "1.25rem"
+    },
+    "spacing-6": {
+      "description": "2x large spacing, for major section gaps",
+      "type": "dimension",
+      "value": "1.5rem"
+    },
+    "spacing-7": {
+      "description": "2.5x large spacing, for generous section separation",
+      "type": "dimension",
+      "value": "1.75rem"
+    },
+    "spacing-8": {
+      "description": "3x large spacing, for page-level vertical rhythm",
+      "type": "dimension",
+      "value": "2rem"
+    },
+    "spacing-9": {
+      "description": "3.5x large spacing, for major page sections",
+      "type": "dimension",
+      "value": "2.25rem"
+    },
+    "spacing-10": {
+      "description": "4x large spacing, for hero section padding",
+      "type": "dimension",
+      "value": "2.5rem"
+    },
+    "spacing-11": {
+      "description": "4.5x large spacing, for generous hero spacing",
+      "type": "dimension",
+      "value": "2.75rem"
+    },
+    "spacing-12": {
+      "description": "5x large spacing, for major layout gaps",
+      "type": "dimension",
+      "value": "3rem"
+    },
+    "spacing-14": {
+      "description": "6x large spacing, for page section separation",
+      "type": "dimension",
+      "value": "3.5rem"
+    },
+    "spacing-16": {
+      "description": "7x large spacing, for major layout sections",
+      "type": "dimension",
+      "value": "4rem"
+    },
+    "spacing-20": {
+      "description": "8.5x large spacing, for page-level vertical spacing",
+      "type": "dimension",
+      "value": "5rem"
+    },
+    "spacing-24": {
+      "description": "10x large spacing, for major page sections",
+      "type": "dimension",
+      "value": "6rem"
+    },
+    "spacing-28": {
+      "description": "12x large spacing, for hero sections and page breaks",
+      "type": "dimension",
+      "value": "7rem"
+    },
+    "spacing-32": {
+      "description": "13x large spacing, for major page layout gaps",
+      "type": "dimension",
+      "value": "8rem"
+    },
+    "spacing-36": {
+      "description": "15x large spacing, for full-height section separation",
+      "type": "dimension",
+      "value": "9rem"
+    },
+    "spacing-40": {
+      "description": "17x large spacing, for major page vertical rhythm",
+      "type": "dimension",
+      "value": "10rem"
+    },
+    "spacing-44": {
+      "description": "18.5x large spacing, for large hero section padding",
+      "type": "dimension",
+      "value": "11rem"
+    },
+    "spacing-48": {
+      "description": "20x large spacing, for major page layout sections",
+      "type": "dimension",
+      "value": "12rem"
+    },
+    "spacing-52": {
+      "description": "22x large spacing, for maximum vertical spacing",
+      "type": "dimension",
+      "value": "13rem"
+    },
+    "spacing-56": {
+      "description": "23.5x large spacing, for full-page section gaps",
+      "type": "dimension",
+      "value": "14rem"
+    },
+    "spacing-60": {
+      "description": "25x large spacing, for major page vertical separation",
+      "type": "dimension",
+      "value": "15rem"
+    },
+    "spacing-64": {
+      "description": "27x large spacing, for maximum page layout gaps",
+      "type": "dimension",
+      "value": "16rem"
+    },
+    "spacing-72": {
+      "description": "30x large spacing, for full-width section separation",
+      "type": "dimension",
+      "value": "18rem"
+    },
+    "spacing-80": {
+      "description": "33.5x large spacing, for hero-level vertical spacing",
+      "type": "dimension",
+      "value": "20rem"
+    },
+    "spacing-96": {
+      "description": "40x large spacing, for maximum page vertical rhythm",
+      "type": "dimension",
+      "value": "24rem"
+    },
+    "spacing-px": {
+      "description": "1 pixel spacing, for hairline borders and micro adjustments",
+      "type": "dimension",
+      "value": "1px"
+    }
+  },
+  "borderRadius": {
+    "radius-none": {
+      "description": "No border radius, for sharp corners",
+      "type": "dimension",
+      "value": "0"
+    },
+    "radius-xs": {
+      "description": "Extra small radius, for slightly rounded corners",
+      "type": "dimension",
+      "value": "0.125rem"
+    },
+    "radius-sm": {
+      "description": "Small radius, for buttons and inputs",
+      "type": "dimension",
+      "value": "0.25rem"
+    },
+    "radius-md": {
+      "description": "Medium radius, for cards and containers",
+      "type": "dimension",
+      "value": "0.5rem"
+    },
+    "radius-lg": {
+      "description": "Large radius, for prominent cards and modals",
+      "type": "dimension",
+      "value": "0.75rem"
+    },
+    "radius-xl": {
+      "description": "Extra large radius, for rounded containers",
+      "type": "dimension",
+      "value": "1rem"
+    },
+    "radius-2xl": {
+      "description": "2x large radius, for heavily rounded elements",
+      "type": "dimension",
+      "value": "1.5rem"
+    },
+    "radius-3xl": {
+      "description": "3x large radius, for pill-shaped elements",
+      "type": "dimension",
+      "value": "2rem"
+    },
+    "radius-full": {
+      "description": "Full radius, for circles and capsules",
+      "type": "dimension",
+      "value": "9999px"
+    }
+  }
+}

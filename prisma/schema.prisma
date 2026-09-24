@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// One registered user. email is globally unique so two accounts can never
+/// share a login (also what makes signup idempotent at the DB level).
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  passwordHash String
+  fullName  String
+  emailVerifiedAt DateTime?
+  /// Tracks when the last verification code was emailed so resend is limited
+  /// to a server-side cooldown window, independent of any client countdown.
+  emailVerificationLastSentAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions               Session[]
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens    PasswordResetToken[]
+  jobs                   Job[]
+}
+
+/// An AI background job: extracting a structured outline from an uploaded
+/// client brief, or running a user-triggered follow-up action on a completed
+/// outline. Searchable by owner; rows are the source of truth for the
+/// processing state the client polls.
+model Job {
+  /// Globally unique job id; doubles as part of the R2 object key for the
+  /// uploaded brief so a single token addresses both the row and the file.
+  id String @id @default(cuid())
+
+  /// Owning user; a job can only be created/read by its owner (enforced in
+  /// the API routes). Indexed for per-user listing.
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// What kind of work this row represents. "extraction" turns an uploaded
+  /// brief into a structured outline (Gemini); "follow-up" applies one
+  /// user-triggered action to an existing outline (DeepSeek).
+  type String
+
+  /// Lifecycle the client polls on. pending (queued, not picked up yet) ->
+  /// processing (AI call in flight) -> done (resultJson filled) or failed
+  /// (errorMessage filled). The upload request itself never waits for this.
+  status String @default("pending")
+
+  /// Granular stage inside "processing", updated by the worker as the file
+  /// moves through download -> text extraction -> AI call -> validation so
+  /// the UI can render where in the pipeline the file currently is. null
+  /// while pending and once the job settles (done/failed).
+  processingStage String?
+
+  /// How many AI attempts have been made so far (1 = first try, 2 = retried
+  /// after a validation failure). Lets support and the UI show retries.
+  attempts Int @default(0)
+
+  /// The file name the user uploaded (sanitized; the same segment embedded in
+  /// inputStorageKey). Backfilled for legacy rows from the storage key.
+  originalFileName String
+
+  /// MIME type the upload declared (text/plain, application/pdf, ...). null
+  /// for legacy rows or when the client sent none.
+  contentType String?
+
+  /// Uploaded file size in bytes, recorded at upload time.
+  fileSizeBytes Int?
+
+  /// Human-readable failure reason (provider timeout/error, validation
+  /// failure after retry, unreadable upload). Written only on failures.
+  errorMessage String?
+
+  /// The object key in Cloudflare R2 for the uploaded brief file. The file
+  /// bytes never live in PostgreSQL — only this pointer to cloud storage.
+  inputStorageKey String
+
+  /// Which provider handled this job ("gemini" for extractions, "deepseek"
+  /// for follow-ups) and which model actually produced the outcome. Model is
+  /// recorded after the call so fallback chains expose which model really ran.
+  provider String?
+  model    String?
+
+  /// Number of extracted characters from the uploaded file that were actually
+  /// sent to the model, for budget/cost analysis on long briefs.
+  charactersExtracted Int?
+
+  /// Provenance: for follow-up jobs, the extraction job they extend, so the
+  /// whole history of a brief reads as one tree instead of disconnected rows.
+  parentJobId String?
+  parent      Job?  @relation("JobHierarchy", fields: [parentJobId], references: [id], onDelete: SetNull)
+  childJobs   Job[] @relation("JobHierarchy")
+
+  /// For "done" jobs, the JSON payload. Both extractions and follow-ups store
+  /// the same structured outline object, so rendering/downloading either is
+  /// identical.
+  resultJson String?
+
+  /// When processing actually began (pending -> processing transition) and
+  /// when the job settled (done/failed). Lets dashboards measure duration.
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([parentJobId])
+}
+
+/// A server-side session row. The browser only ever holds a random id that
+/// references this row, so sessions can be revoked/expired centrally.
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+/// A 6-digit email verification code. `codeHash` is what verification is
+/// checked against (never compared in plaintext); the raw `code` is also kept
+/// so the currently issued token is inspectable directly in the database /
+/// Prisma Studio during development. Rows die once used or past expiresAt.
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String
+  codeHash  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+/// A password reset token. Only the sha-256 hash is stored with an expiry and
+/// a one-shot flag, so a leaked DB cannot be used to mint reset links.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}

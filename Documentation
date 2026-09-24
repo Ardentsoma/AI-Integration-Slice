@@ -1,0 +1,575 @@
+# Scope: AI Integration Slice — Explained Simply
+
+This is the same documentation as before, but every technical term is
+explained in plain language as it comes up.
+
+---
+
+## 1. What This Is
+
+A freelance designer can upload one or more messy client briefs (plain
+text, PDF, or Word documents — up to 5 at once). Each file gets read by
+an AI model (Google Gemini) in the background, and turned into a clean,
+organized outline: a project name, a summary, goals, deliverables,
+a timeline, budget notes, assumptions, and open questions.
+
+Once that's done, the designer can click one button to "expand" the
+outline into a fuller, more polished version — this second step uses a
+different AI model (DeepSeek) instead of Gemini.
+
+Both the original outline and the expanded version can be downloaded
+as a PDF or Word document, generated automatically by the server.
+
+**Logging in** works exactly the same as it did in the first slice
+(Assessment 1) — nothing new was built here, the existing sign-up/
+sign-in system was just reused. Every request checks that a user can
+only see their own uploaded briefs, never anyone else's.
+
+This slice deliberately does not let you edit results, share them with
+someone else, or see a history of all your past briefs in one list.
+
+---
+
+## 2. How To Run It
+
+1. Install the project's dependencies: `npm install`
+2. Set up these settings in a `.env` file:
+   - `DATABASE_URL` — how to connect to the database
+   - `AUTH_SECRET` — a secret used to keep login sessions secure (from
+     the first slice)
+   - Email settings (`SMTP_...`) — used to send verification codes
+     when someone signs up (also from the first slice). If left blank,
+     codes just print to the terminal instead of emailing, useful
+     while testing.
+   - `GEMINI_API_KEY` — your access key for Google's Gemini AI, used
+     for turning briefs into outlines
+   - `DEEPSEEK_API_KEY` — your access key for DeepSeek's AI, used for
+     the "expand this brief" button
+   - Cloudflare storage settings (`R2_...`) — where uploaded files
+     actually get stored
+3. Set up the database: `npx prisma migrate deploy` then
+   `npx prisma generate` (these commands build the actual database
+   tables from the schema, and generate the code that talks to them)
+4. Start the app: `npm run dev`
+5. Open it in your browser, create an account (you'll need to verify
+   your email first), then go to the briefs page.
+
+---
+
+## 3. The Flow, Step By Step
+
+### Uploading a brief
+
+The user drags one or more files onto the upload page (max 5 files,
+5MB each). This gets sent to the server as one request containing all
+the files together.
+
+The server then, in order:
+1. Checks the person isn't uploading too fast (a safety limit)
+2. Checks every file is valid — if even one file in the batch is bad,
+   the whole batch is rejected with a clear message, rather than
+   silently accepting some and failing on others
+3. Uploads each file to Cloudflare's cloud storage (not the database)
+4. Creates one tracking record per file, marked "pending"
+5. Immediately tells the user "got it, working on it" — without
+   making them wait for the AI to actually finish
+
+The actual AI processing then happens separately, after this response
+has already gone out.
+
+### Background processing (turning a brief into an outline)
+
+For each file, the server:
+1. Downloads the file back from cloud storage
+2. Pulls the plain text out of it (different tools are used depending
+   on whether it's a `.txt`, `.pdf`, or `.docx` file)
+3. Sends that text to Gemini, along with instructions on exactly what
+   information to extract and in what format
+4. Checks that what Gemini sent back actually matches the expected
+   format — if it doesn't, something is wrong, and this is treated as
+   a real failure, not just accepted anyway
+5. Saves the final result, and marks the tracking record "done" (or
+   "failed" if something went wrong)
+
+While this is happening, the tracking record also notes which specific
+stage it's currently at ("downloading file," "reading the text,"
+"waiting on the AI"), so the interface can show real progress instead
+of just a generic spinner.
+
+### Viewing the result
+
+The browser periodically checks in ("is it done yet?") until each
+file's outline is ready, then shows it on screen. Each outline also
+has "Download as PDF" and "Download as Word" buttons, which generate
+those files on the fly when clicked.
+
+### The follow-up action ("Expand this brief")
+
+Clicking this button sends a request referencing the original outline.
+The server checks that outline belongs to the user and is actually
+finished, creates a new tracking record linked to the original one,
+and responds immediately. In the background, DeepSeek is given the
+existing outline and asked to expand it into a fuller version — using
+the exact same format as before, so it displays the same way. The
+result becomes its own separate, downloadable outline.
+
+---
+
+## 4. The Data Model
+
+There's one main table involved, called `Job`. Think of a "Job" as one
+tracking record — either "process this uploaded brief" or "expand this
+existing outline" is one Job each.
+
+**What's stored on each Job:**
+
+- **Who it belongs to** — so a user can never see another user's brief
+- **What type it is** — "extraction" (turning a brief into an outline)
+  or "follow-up" (expanding an existing outline)
+- **Its current status** — pending, processing, done, or failed
+- **Which specific stage it's at** — for showing real-time progress
+- **How many times it's been attempted** — since a failed attempt
+  might get retried once
+- **The original uploaded file's name, type, and size** — just
+  descriptive info, not the file itself
+- **An error message** — filled in only if something went wrong, so
+  the user gets an honest reason instead of just "it failed"
+- **A reference (key) pointing to the actual file in cloud storage** —
+  never the file's actual contents
+- **Which AI provider and model actually handled it** — recorded
+  after the fact, useful for knowing which model produced which result
+- **A link back to the "parent" job** — only set on follow-up jobs, so
+  you can trace an expanded brief back to the original it came from
+- **The actual result** — the structured outline itself, stored once
+  finished
+
+**What makes this safe from mistakes?**
+
+- Every single lookup checks "does this belong to the current user?"
+  — so there's no way to view someone else's data even by guessing an
+  ID
+- A job can only move forward through its stages in one direction
+  (pending → processing → done/failed) — it's built so a slow, delayed
+  retry can never accidentally overwrite a result that already
+  finished successfully
+- Before anything is saved as "done," it's checked against the
+  expected format first — so a "done" job can never secretly contain
+  broken or incomplete data
+
+---
+
+## 5. The Concepts
+
+### What an API Endpoint Is
+
+**What it is:** A specific web address on the server that the app's
+frontend can send requests to, to do one particular thing — upload a
+file, check a job's status, download a result.
+
+**Why it's needed:** The browser itself can't directly reach the
+database, the cloud storage, or the AI providers — everything has to
+go through the server, and each endpoint is one clearly defined
+"thing you can ask the server to do."
+
+**How it was built:** Separate endpoints exist for uploading briefs,
+checking a job's status, requesting the expanded version, and
+downloading a result as a file. The login/signup endpoints were
+already built in the earlier slice and reused unchanged.
+
+**What was avoided:** Doing the actual AI work directly inside the
+upload request itself — that would make the user wait, possibly for a
+long time, just to get an initial "ok, got it" response.
+
+---
+
+### SDKs vs Raw HTTP
+
+**What it is:** An SDK is a ready-made toolkit a company provides for
+talking to their own service correctly. The alternative — "raw HTTP" —
+means manually constructing web requests yourself from scratch,
+without that toolkit's help.
+
+**Why it's needed:** Each AI provider has its own quirks in how it
+expects requests to be formatted and how it reports errors. An
+official toolkit already handles all of that correctly; doing it by
+hand risks getting small details wrong.
+
+**How it was built:** Google's own official toolkit was used for
+Gemini. DeepSeek doesn't provide one of its own, but its service is
+compatible with OpenAI's toolkit, so OpenAI's official SDK was used
+instead, just pointed at DeepSeek's own address rather than OpenAI's —
+this is explicitly allowed for providers that don't have their own SDK,
+as long as it's disclosed (which it is, right here).
+
+**What was avoided:** Manually building the requests by hand — that
+would just reintroduce all the small mistakes the official toolkits
+already prevent.
+
+---
+
+### System Prompts vs User Prompts
+
+**What it is:** A "system prompt" is the fixed instruction that tells
+the AI what role to play and exactly how to behave, every single time.
+A "user prompt" is the specific piece of data — in this case, the
+actual brief text — that changes with each request.
+
+**Why it's needed:** Separating the two means the rules ("extract these
+specific things, in this specific format") stay constant, while only
+the actual content being processed changes each time.
+
+**How it was built:** Two separate instructions were written — one
+telling Gemini exactly what to pull out of a raw brief and in what
+shape, and a second telling DeepSeek how to expand an existing outline
+into a fuller version, without inventing new facts that weren't
+already there.
+
+**What was avoided:** Cramming both the fixed instructions and the
+changing data into one single message each time — that mixes up what's
+supposed to stay stable with what's supposed to change.
+
+---
+
+### Model Parameters
+
+**What it is:** Adjustable settings that control how an AI model
+behaves — how creative versus predictable it is, how long its response
+can be, and how long to wait before giving up on a slow response.
+
+**Why it's needed:** Without tuning these, a model might either
+produce wildly inconsistent results each time (too creative) or
+sound too stiff and repetitive (too predictable) — and without a
+maximum wait time, one slow response could freeze things indefinitely.
+
+**How it was built:** For extracting information from a brief, the
+"creativity" setting was turned down low, since the same brief should
+produce basically the same outline every time — consistency mattered
+more than creative flair here. For expanding a brief into fuller,
+client-ready writing, the creativity setting was turned up a bit,
+since some natural rewording is actually desirable there. Both AI
+calls also have a maximum wait time before they're treated as having
+failed, so a slow response can't hang forever.
+
+**What was avoided:** Leaving these settings at their defaults or
+unbounded — that risks both inconsistent results and calls that never
+time out.
+
+---
+
+### Structured Output and Schema Validation
+
+**What it is:** Instead of asking the AI to just write free-form text,
+it's asked to return its answer in a specific, predictable shape (like
+a form with defined fields) — and then that shape is double-checked in
+the app's own code before it's trusted.
+
+**Why it's needed:** Free-form text can't be neatly displayed on
+screen or turned into a downloadable document. And even when an AI is
+asked for a specific format, it can still occasionally get it slightly
+wrong — so relying on the AI alone to enforce its own format isn't
+enough.
+
+**How it was built:** Both AI calls are asked to return their answer
+as structured data matching an expected shape. After getting a
+response, the app checks it itself against that same expected shape.
+For the initial extraction, if it doesn't match, the app tries asking
+again once, with a firmer reminder. If it still doesn't match on that
+retry, the job is marked as genuinely failed, with a clear
+explanation — rather than saving something broken and pretending it
+succeeded. The follow-up (expansion) call does not retry on a format
+mismatch; it fails the job honestly on the first mismatch, since it
+receives a cleaner, already-structured outline to work from.
+
+**What was avoided:** Simply trusting whatever the AI sends back
+without double-checking it — that risks silently saving corrupted or
+incomplete data as if it were a success.
+
+---
+
+### Jobs and Workers
+
+**What it is:** A "job" is a record of "something needs to happen."
+A "worker" is the part of the code that actually does that work,
+separately from the original request that created the job.
+
+**Why it's needed:** AI responses can take anywhere from a few seconds
+to over a minute. Making the user's browser sit and wait the entire
+time for that to finish would be a poor experience, and would tie up
+server resources unnecessarily.
+
+**How it was built:** As soon as a file is uploaded, a job record is
+created and the user gets an instant reply — the actual AI work then
+happens afterward, in the background, updating that same job record as
+it progresses. The browser simply checks back periodically to see if
+it's done yet.
+
+**What was avoided:** Processing the AI call directly inside the
+original upload request — that would mean the user staring at a
+loading spinner tied directly to how fast (or slow) an external AI
+service happens to respond that particular moment.
+
+---
+
+### Queues, and Why Concurrency Is Capped
+
+**What it is:** A limit on how many AI requests are allowed to be
+"in flight" (actively waiting for a response) at the exact same time,
+no matter how many files someone uploads at once.
+
+**Why it's needed:** If someone uploads, say, 20 files at once with no
+limit, that could fire off 20 simultaneous requests to the AI
+provider all at once — which risks running up costs quickly and can
+get temporarily blocked by the provider for sending too much traffic
+too fast.
+
+**How it was built:** No more than 2 AI requests are allowed to be
+actively in progress at once, system-wide — everything else waits its
+turn in line until a slot opens up. This limit applies across all
+users combined, not per individual person, since it's protecting one
+shared connection to the AI provider.
+
+**What was avoided:** Building this queuing/limiting logic completely
+from scratch — instead, a small, well-tested existing tool was used
+for it, since reinventing this kind of thing tends to introduce subtle
+bugs.
+
+---
+
+### Rate Limiting as a Cost Control
+
+**What it is:** Restricting how often certain actions can be repeated
+in a short time window — both by an individual user, and overall,
+system-wide.
+
+**Why it's needed:** Every single AI call costs real money. Without
+any limits, someone repeatedly hammering the upload or "expand" button
+translates directly into real, uncontrolled spending.
+
+**How it was built:** There are two separate layers of limits. One
+limits how often any single person can upload files or request an
+expansion. A second, separate limit caps the *total* number of
+requests sent to each AI provider overall, across every user
+combined — since the real risk being protected against is the shared
+account's usage limit being exhausted, not just one person acting
+alone. If the AI provider itself says "slow down, try again in X
+seconds," that exact wait time is respected before trying again.
+
+**What was avoided:** Only limiting individual users and assuming
+that's enough — many users acting normally, all at once, could still
+add up to the same problem, so an overall system-wide limit exists on
+top of the individual ones.
+
+---
+
+### Why Files Live in Cloud Storage, Not the Database
+
+**What it is:** Actual uploaded files are stored in a dedicated cloud
+storage service (Cloudflare, in this case), and only a short reference
+pointing to that file is kept in the database — never the file itself.
+
+**Why it's needed:** Databases are built and optimized for organized,
+structured records — not for holding large files. Stuffing files
+directly into a database tends to slow it down and complicates things
+like backups.
+
+**How it was built:** Every uploaded file goes straight to Cloudflare
+storage. The database only ever stores a short "key" — basically an
+address — pointing to where that file actually lives.
+
+**What was avoided:** Saving the raw uploaded file directly inside the
+database — this would bloat it unnecessarily and isn't what a
+database like this is meant for.
+
+---
+
+### The Cost Model
+
+**What it is:** A rough, honest estimate of what each individual AI
+request actually costs in real money, so the limits already put in
+place can be judged against real numbers rather than guesses.
+
+**Why it's needed:** AI usage costs can be invisible until a surprising
+bill shows up — knowing roughly what one run costs is what makes a
+sensible limit actually sensible.
+
+**How it was built:** Based on typical usage, extracting one outline
+from a brief costs a small fraction of a cent, and expanding one
+outline into a fuller version costs about the same. Combined with the
+existing limits on how many requests can run at once and how often
+they can repeat, the realistic worst-case spending stays well under a
+dollar, even under fairly heavy use.
+
+**What was avoided:** Adding a hard spending cap that would completely
+block usage the moment some fixed dollar limit is hit — the existing
+combination of limits already keeps costs low enough that a harsh
+cutoff risked blocking a legitimate user over a false alarm.
+
+---
+
+## 6. What Went Wrong
+
+**Problem 1 — Installing the project failed with a permissions error**
+
+*What happened:* Running the install command failed, complaining it
+didn't have permission to create certain files.
+
+*What was checked:* At first it looked like a simple settings mixup —
+the tool's cache location had accidentally been pointed at a folder
+belonging to a completely different project. Fixing that revealed a
+second, deeper issue underneath.
+
+*What was actually wrong:* Some of the cached files were owned by the
+computer's admin account instead of the normal user account — likely
+because the install tool had been run with elevated admin permissions
+by accident at some point in the past, which is generally something to
+avoid doing.
+
+*How it was fixed:* The broken cache setting was reset, and ownership
+of the affected folder was corrected back to the normal user account.
+
+---
+
+**Problem 2 — PDF files failed to process, but text and Word files worked fine**
+
+*What happened:* Uploading a `.pdf` file consistently failed during
+processing, while `.txt` and `.docx` files worked without any issue.
+
+*What was checked:* The failure was traced specifically to the part of
+the code responsible for reading text out of PDF files.
+
+*What was actually wrong:* The tool used for reading PDFs relies on a
+separate helper file to do some of its work, and the specific way the
+project's build process was set up caused it to look for that helper
+file in the wrong location, so it couldn't find it.
+
+*How it was fixed:* The code was adjusted to find and load that helper
+file directly, rather than relying on the default (and, in this setup,
+broken) way of locating it.
+
+---
+
+**Problem 3 — The AI occasionally returned data in the wrong shape**
+
+*What happened:* Every once in a while, even though the AI request
+itself succeeded normally, the actual content it returned didn't match
+the expected structure — sometimes missing pieces entirely.
+
+*What was checked:* This wasn't a connection or server error — the
+request itself always succeeded. The problem was specifically that
+the content inside a successful response didn't match what was
+expected.
+
+*What was actually wrong:* Even when explicitly asked to return data
+in a specific format, the AI model doesn't always follow that format
+perfectly every single time.
+
+*How it was fixed:* Every response is checked against the expected
+format before being trusted. If it doesn't match, the request is tried
+one more time with a firmer reminder about the required format. If it
+still doesn't match after that second attempt, the whole thing is
+honestly marked as failed, rather than silently saving something
+broken.
+
+---
+
+**Problem 4 — Downloading certain briefs as a PDF crashed**
+
+*What happened:* Downloading a brief as a PDF failed specifically when
+the brief's content contained emoji, non-English characters, or
+special symbols.
+
+*What was checked:* The error was tracked down to the exact step where
+the PDF file gets finalized and saved.
+
+*What was actually wrong:* The specific text styles being used for
+PDFs only support a limited set of characters (essentially standard
+English characters and basic symbols) — anything outside that set
+caused the whole PDF generation to fail completely.
+
+*How it was fixed:* Any character outside that supported set now gets
+automatically swapped out for a simple placeholder character before
+the PDF is generated, so PDF downloads always succeed — even for
+briefs containing emoji or non-English text. (Word document downloads
+were never affected by this, since they support a much wider range of
+characters natively.)
+
+---
+
+**Problem 5 — The expanded brief's title showed up twice**
+
+*What happened:* After using the "expand this brief" feature, the same
+project title appeared twice, stacked right on top of each other, on
+the results page.
+
+*What was checked:* It turned out the expanded result was being
+displayed using the exact same display component as the original
+outline — including the part of that component responsible for
+showing the big title header.
+
+*What was actually wrong:* Since the expanded brief keeps the same
+title as the original, and both were being shown using the same
+"show everything including the title" display logic, the title ended
+up rendering twice — once from the original, and again from the
+expanded version directly underneath it.
+
+*How it was fixed:* The display component was given a simple on/off
+option to hide just the title header. The expanded version now uses
+that option to hide its own duplicate title, showing only its content
+underneath its own separate "Expanded brief" label instead.
+
+---
+
+## 7. What This Slice Does Not Handle
+
+**What would break under heavy real-world use:**
+
+- If the server restarts while files are mid-processing, those jobs
+  would get stuck showing "processing" forever, with nothing left to
+  actually finish them.
+- If a large number of files were uploaded all at once, while the
+  number of actual AI requests is safely limited, other work (like
+  downloading files and reading their text) isn't limited the same
+  way, and could use up a lot of memory all at once.
+- The current safety limits (rate limits and usage caps) only work
+  correctly if the app is running as a single instance — running
+  multiple copies of the app at once would let each copy track its own
+  separate limits, effectively allowing several times more usage than
+  intended.
+
+**What would be added before real users relied on this:**
+
+- A more robust, dedicated system for managing background jobs, with
+  proper retry timing and a way to review jobs that permanently failed
+  instead of just leaving them marked "failed."
+- Making the current safety limits shared across multiple running
+  copies of the app, instead of each one tracking its own separately.
+- A way for a user to manually retry a brief that failed, and a way to
+  clean up stored files for jobs that are deleted or no longer needed.
+- An overall monthly spending safety net, once real paying users are
+  involved.
+
+**Left out on purpose, versus left out due to time:**
+
+- Deliberately left out (not part of what this slice was meant to
+  cover): editing results, sharing them with others, and viewing a
+  history of every past brief in one place.
+- Left out due to time constraints: filtering or paging through a list
+  of past jobs, and a more advanced job-review system — the current
+  simple approach honestly covers what was required, just not in the
+  most production-hardened way possible.
+
+---
+
+## 8. If I Built This Again
+
+The one thing worth doing differently from the start: use a proper,
+dedicated background job system from day one, instead of the simpler
+"just handle it right away in the background" approach used here.
+The current approach works and is easy to understand, but it pushed
+extra complexity into other places instead — the interface has to keep
+checking back repeatedly to see if something's done, and if the server
+ever restarts partway through, there's no way for an unfinished job to
+pick back up where it left off. A proper job system would have handled
+all of that automatically from the start, at the cost of one extra
+piece of infrastructure to set up — which is something any serious,
+long-term version of this feature would eventually need anyway.

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCOPE - Client Project Manager</title>
+  <meta name="description" content="Manage freelance client projects easily with SCOPE. AI-powered project outlines, client tracking, and scoping.">
+  <link rel="stylesheet" href="styles/design-tokens.css">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <!-- Floating Screen Switcher Bar for Quick Inspection -->
+  <header class="screen-switcher-bar" role="navigation" aria-label="Screen preview switcher">
+    <span class="screen-switcher-label">Screens</span>
+    <button type="button" class="screen-tab-btn" data-screen="create-account" id="tab-create-account">Create Account</button>
+    <button type="button" class="screen-tab-btn active" data-screen="login" id="tab-login">Welcome Back</button>
+    <button type="button" class="screen-tab-btn" data-screen="reset-password" id="tab-reset-password">Reset Password</button>
+    <button type="button" class="screen-tab-btn" data-screen="verify-email" id="tab-verify-email">Verify Email</button>
+    <button type="button" class="screen-tab-btn" data-screen="choose-password" id="tab-choose-password">Choose Password</button>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="app-viewport">
+
+    <!-- ====================================================================
+         SCREEN 1: CREATE ACCOUNT (Split Layout)
+         ==================================================================== -->
+    <section id="screen-create-account" class="screen-view" aria-label="Create Account Screen">
+      <div class="split-screen-container">
+        <!-- Left Branded Art Card -->
+        <div class="brand-art-card">
+          <div class="brand-logo-wrap">
+            <span class="scope-logo">
+              SCOPE
+              <span class="scope-logo-bar"></span>
+            </span>
+          </div>
+
+          <div class="brand-art-horizon" aria-hidden="true">
+            <div class="horizon-glow"></div>
+            <div class="horizon-rim"></div>
+            <div class="horizon-overlay-deep"></div>
+          </div>
+
+          <h2 class="brand-art-tagline">Manage Client Projects Easily</h2>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="split-form-panel">
+          <div class="split-form-header">
+            <h1 class="split-form-title">Create Account</h1>
+            <p class="split-form-subtitle">Set up your projects in minutes.</p>
+          </div>
+
+          <form id="form-create-account" class="split-form" novalidate>
+            <div class="input-wrapper">
+              <input type="text" id="register-name" class="form-input" placeholder="Full name" autocomplete="name" required>
+            </div>
+
+            <div class="input-wrapper">
+              <input type="email" id="register-email" class="form-input" placeholder="Email" autocomplete="email" required>
+            </div>
+
+            <div class="input-wrapper">
+              <input type="password" id="register-password" class="form-input" placeholder="Password" autocomplete="new-password" minlength="8" required>
+              <span class="input-helper-text">Password must be at least 8 characters</span>
+            </div>
+
+            <button type="submit" id="btn-submit-register" class="btn-primary-red">Create Account</button>
+          </form>
+
+          <p class="split-form-footer">
+            Already Have an Account? <a href="#login" class="link-bold-red" data-navigate="login">Login</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 2: WELCOME BACK / LOGIN (Split Layout)
+         ==================================================================== -->
+    <section id="screen-login" class="screen-view active-screen" aria-label="Sign In Screen">
+      <div class="split-screen-container">
+        <!-- Left Branded Art Card -->
+        <div class="brand-art-card">
+          <div class="brand-logo-wrap">
+            <span class="scope-logo">
+              SCOPE
+              <span class="scope-logo-bar"></span>
+            </span>
+          </div>
+
+          <div class="brand-art-horizon" aria-hidden="true">
+            <div class="horizon-glow"></div>
+            <div class="horizon-rim"></div>
+            <div class="horizon-overlay-deep"></div>
+          </div>
+
+          <h2 class="brand-art-tagline">Manage Client Projects Easily</h2>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="split-form-panel">
+          <div class="split-form-header">
+            <h1 class="split-form-title">Welcome back</h1>
+            <p class="split-form-subtitle">Sign in to your projects.</p>
+          </div>
+
+          <form id="form-login" class="split-form" novalidate>
+            <div class="input-wrapper">
+              <input type="email" id="login-email" class="form-input" placeholder="Email" autocomplete="email" required>
+            </div>
+
+            <div class="input-wrapper">
+              <input type="password" id="login-password" class="form-input" placeholder="Password" autocomplete="current-password" required>
+            </div>
+
+            <div class="form-row-link">
+              <a href="#reset-password" class="forgot-password-link" data-navigate="reset-password">Forgot Password?</a>
+            </div>
+
+            <button type="submit" id="btn-submit-login" class="btn-primary-red">Log in</button>
+          </form>
+
+          <p class="split-form-footer">
+            Already Have an Account? <a href="#create-account" class="link-bold-red" data-navigate="create-account">Create One</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 3: RESET YOUR PASSWORD (Centered Warm Card)
+         ==================================================================== -->
+    <section id="screen-reset-password" class="screen-view" aria-label="Reset Password Screen">
+      <div class="centered-card-container">
+        <h1 class="centered-card-title">Reset your password</h1>
+        <p class="centered-card-subtitle">Enter your email and we'll send you a link to reset it.</p>
+
+        <form id="form-reset-password" class="centered-form" novalidate>
+          <div class="input-wrapper">
+            <input type="email" id="reset-email" class="form-input" placeholder="Email" autocomplete="email" required>
+          </div>
+
+          <button type="submit" id="btn-submit-reset" class="btn-primary-red">Send reset link</button>
+        </form>
+
+        <p class="card-footer-text">
+          <a href="#login" class="link-bold-red" data-navigate="login">Back to log in</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 4: VERIFY YOUR EMAIL (Centered Warm Card)
+         ==================================================================== -->
+    <section id="screen-verify-email" class="screen-view" aria-label="Verify Email Screen">
+      <div class="centered-card-container">
+        <h1 class="centered-card-title">Verify your email</h1>
+        <p class="centered-card-subtitle">We sent a 6-digit code to ar*********om Enter it below.</p>
+
+        <form id="form-verify-email" class="centered-form" novalidate>
+          <div class="input-wrapper">
+            <input type="text" id="verify-code" class="form-input" placeholder="Verification Code" inputmode="numeric" maxlength="8" required>
+          </div>
+
+          <button type="submit" id="btn-submit-verify" class="btn-primary-red">Verify</button>
+        </form>
+
+        <p id="resend-code-wrap" class="card-footer-text">
+          Didn't a code? <span class="link-bold-red">Resend in <span id="countdown-num">5</span>s</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 5: CHOOSE A NEW PASSWORD (Centered Warm Card)
+         ==================================================================== -->
+    <section id="screen-choose-password" class="screen-view" aria-label="Choose New Password Screen">
+      <div class="centered-card-container">
+        <h1 class="centered-card-title">Choose a new password</h1>
+        <p class="centered-card-subtitle">Make it something you haven't used before.</p>
+
+        <form id="form-choose-password" class="centered-form" novalidate>
+          <div class="input-wrapper">
+            <input type="password" id="choose-new-password" class="form-input" placeholder="New Password" autocomplete="new-password" required>
+          </div>
+
+          <div class="input-wrapper">
+            <input type="password" id="choose-confirm-password" class="form-input" placeholder="Confirm Password" autocomplete="new-password" required>
+          </div>
+
+          <button type="submit" id="btn-submit-choose-password" class="btn-primary-red">Reset password</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Feedback Toast -->
+  <div id="toast" class="toast-notification" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

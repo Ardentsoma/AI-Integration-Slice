@@ -1,0 +1,48 @@
+{
+  "name": "scope-client-manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "email:test": "node --env-file=.env scripts/test-smtp.mjs",
+    "r2:test": "node --env-file=.env scripts/test-r2.mjs",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1136.0",
+    "@google/genai": "^2.24.0",
+    "@google/generative-ai": "^0.24.1",
+    "@next/swc-darwin-x64": "^16.3.4",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "docx": "^9.7.1",
+    "mammoth": "^1.12.3",
+    "next": "16.3.4",
+    "nodemailer": "^10.0.9",
+    "openai": "^7.23.0",
+    "p-limit": "^7.3.3",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^2.4.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "postcss": "^8",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5"
+  }
+}

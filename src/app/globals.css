@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography: Families */
+  --font-sans: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Dela Gothic One", "Work Sans", cursive, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Colors: Foundation Neutral */
+  --color-neutral-50: #e7e7ea;
+  --color-neutral-100: #b3b6bd;
+  --color-neutral-200: #8e929d;
+  --color-neutral-300: #5b6070;
+  --color-neutral-400: #3b4155;
+  --color-neutral-500: #0a122a;
+  --color-neutral-600: #091026;
+  --color-neutral-700: #070d1e;
+  --color-neutral-800: #060a17;
+  --color-neutral-900: #040812;
+
+  /* Colors: Foundation Red */
+  --color-red-50: #fce8e8;
+  --color-red-100: #f4b9b8;
+  --color-red-200: #ef9796;
+  --color-red-300: #e86766;
+  --color-red-400: #e44948;
+  --color-red-500: #dd1c1a;
+  --color-red-600: #c91918;
+  --color-red-700: #9d1412;
+  --color-red-800: #7a0f0e;
+  --color-red-900: #5d0c0b;
+
+  /* Colors: Foundation Warm */
+  --color-warm-50: #fffefa;
+  --color-warm-100: #fffbf0;
+  --color-warm-200: #fff9e9;
+  --color-warm-300: #fff6e0;
+  --color-warm-400: #fff4d9;
+  --color-warm-500: #fff1d0;
+  --color-warm-600: #e8dbbd;
+  --color-warm-700: #b5ab94;
+  --color-warm-800: #8c8572;
+  --color-warm-900: #6b6557;
+
+  /* Colors: Foundation Yellow */
+  --color-yellow-50: #fefae6;
+  --color-yellow-100: #faeeb2;
+  --color-yellow-200: #f8e68d;
+  --color-yellow-300: #f5da5a;
+  --color-yellow-400: #f3d339;
+  --color-yellow-500: #f0c808;
+  --color-yellow-600: #dab607;
+  --color-yellow-700: #aa8e06;
+  --color-yellow-800: #846e04;
+  --color-yellow-900: #655403;
+
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    min-height: 100vh;
+    background-color: #ffffff;
+    color: #0a122a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+  }
+}

@@ -1,0 +1,519 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;500&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import url('./design-tokens.css');
+
+/* ==========================================================================
+   Base & Resets
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: var(--font-family-sans);
+  background-color: #ffffff;
+  color: var(--color-neutral-500);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-normal);
+}
+
+/* ==========================================================================
+   Screen Switcher Top Navigation
+   ========================================================================== */
+.screen-switcher-bar {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10, 18, 42, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 8px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 10px 30px rgba(10, 18, 42, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.screen-switcher-label {
+  color: var(--color-warm-300);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  padding: 0 10px 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.screen-switcher-label::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.screen-tab-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-neutral-100);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.screen-tab-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.screen-tab-btn.active {
+  background: var(--color-red-500);
+  color: #ffffff;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 2px 8px rgba(221, 28, 26, 0.4);
+}
+
+/* ==========================================================================
+   Screen App Container
+   ========================================================================== */
+.app-viewport {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 40px;
+}
+
+.screen-view {
+  display: none;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.screen-view.active-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Centered Warm Card Layout (Verify, Reset Password, Choose Password)
+   ========================================================================== */
+.centered-card-container {
+  width: 100%;
+  max-width: 820px;
+  background-color: var(--color-warm-100);
+  border-radius: var(--radius-3xl);
+  padding: 72px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.centered-card-title {
+  font-family: var(--font-family-sans);
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-neutral-500);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--spacing-2);
+}
+
+.centered-card-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-neutral-300);
+  margin-bottom: var(--spacing-8);
+  max-width: 440px;
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--font-weight-regular);
+}
+
+.centered-form {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  align-items: stretch;
+}
+
+/* ==========================================================================
+   Form Input Elements
+   ========================================================================== */
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-input {
+  width: 100%;
+  background-color: #fffefb;
+  border: 1px solid rgba(142, 146, 157, 0.35);
+  border-radius: var(--radius-md);
+  padding: 13px 18px;
+  font-family: var(--font-family-sans);
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.form-input::placeholder {
+  color: var(--color-neutral-300);
+  opacity: 0.85;
+}
+
+.form-input:focus {
+  border-color: var(--color-neutral-400);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(221, 28, 26, 0.08);
+}
+
+.input-helper-text {
+  font-size: 0.725rem;
+  color: var(--color-neutral-300);
+  margin-top: 6px;
+  font-weight: var(--font-weight-regular);
+}
+
+.form-row-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -6px;
+  margin-bottom: 2px;
+}
+
+.forgot-password-link {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-500);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.forgot-password-link:hover {
+  color: var(--color-red-500);
+}
+
+/* ==========================================================================
+   Primary Action Button
+   ========================================================================== */
+.btn-primary-red {
+  width: 100%;
+  background-color: var(--color-red-500);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 13px 20px;
+  font-family: var(--font-family-sans);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-primary-red:hover {
+  background-color: var(--color-red-600);
+  box-shadow: 0 4px 12px rgba(221, 28, 26, 0.25);
+}
+
+.btn-primary-red:active {
+  background-color: var(--color-red-700);
+  transform: scale(0.99);
+}
+
+/* Helper footers */
+.card-footer-text {
+  font-size: 0.80rem;
+  color: var(--color-neutral-400);
+  margin-top: var(--spacing-3);
+}
+
+.link-bold-red {
+  color: var(--color-red-500);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link-bold-red:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Split Layout (Create Account & Welcome Back Login)
+   ========================================================================== */
+.split-screen-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 72px;
+  width: 100%;
+  max-width: 960px;
+}
+
+/* --- Left Branded Art Card --- */
+.brand-art-card {
+  width: 380px;
+  height: 560px;
+  flex-shrink: 0;
+  border-radius: var(--radius-3xl);
+  background-color: var(--color-neutral-900);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 32px 40px;
+  box-shadow: 0 20px 40px rgba(4, 8, 18, 0.2);
+}
+
+/* Top Scope Logo */
+.brand-logo-wrap {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.scope-logo {
+  font-family: var(--font-family-sans);
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+}
+
+.scope-logo-bar {
+  position: absolute;
+  bottom: -4px;
+  right: 0;
+  width: 36px;
+  height: 3.5px;
+  background-color: var(--color-red-500);
+  border-radius: 1px;
+}
+
+/* Radiant Horizon Artwork inside Brand Card */
+.brand-art-horizon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* The celestial glowing arc & crimson atmospheric haze */
+.brand-art-horizon .horizon-glow {
+  position: absolute;
+  bottom: -40px;
+  left: -20%;
+  width: 140%;
+  height: 380px;
+  background: radial-gradient(
+    ellipse 60% 45% at 50% 48%,
+    #fff1d0 0%,
+    rgba(255, 241, 208, 0.9) 14%,
+    rgba(221, 28, 26, 0.95) 42%,
+    #dd1c1a 62%,
+    #9d1412 82%,
+    #5d0c0b 100%
+  );
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+  filter: blur(12px);
+  opacity: 0.96;
+}
+
+.brand-art-horizon .horizon-rim {
+  position: absolute;
+  bottom: 120px;
+  left: -10%;
+  width: 120%;
+  height: 120px;
+  background: radial-gradient(
+    ellipse 50% 28% at 50% 90%,
+    #ffffff 0%,
+    #fff9e9 25%,
+    rgba(255, 241, 208, 0.4) 60%,
+    transparent 100%
+  );
+  filter: blur(16px);
+  opacity: 0.85;
+}
+
+.brand-art-horizon .horizon-overlay-deep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 8, 18, 0.95) 0%,
+    rgba(4, 8, 18, 0.6) 45%,
+    rgba(221, 28, 26, 0) 65%,
+    rgba(157, 20, 18, 0.35) 90%,
+    rgba(93, 12, 11, 0.7) 100%
+  );
+}
+
+/* Card Bottom Tagline */
+.brand-art-tagline {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-family-sans);
+  font-size: 2rem;
+  font-weight: var(--font-weight-extrabold);
+  color: #ffffff;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  max-width: 260px;
+}
+
+/* --- Right Form Panel --- */
+.split-form-panel {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.split-form-header {
+  margin-bottom: var(--spacing-6);
+}
+
+.split-form-title {
+  font-family: var(--font-family-sans);
+  font-size: 2.15rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-neutral-500);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: 6px;
+}
+
+.split-form-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-neutral-300);
+  font-weight: var(--font-weight-regular);
+}
+
+.split-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.split-form-footer {
+  margin-top: var(--spacing-4);
+  text-align: center;
+  font-size: 0.80rem;
+  color: var(--color-neutral-400);
+}
+
+/* Notification Toast for interactivity */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--color-neutral-500);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(10, 18, 42, 0.25);
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10000;
+}
+
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-notification.success {
+  border-left: 4px solid #22c55e;
+}
+
+.toast-notification.info {
+  border-left: 4px solid var(--color-red-500);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 860px) {
+  .screen-switcher-bar {
+    width: 95%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 6px 12px;
+  }
+
+  .split-screen-container {
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .brand-art-card {
+    width: 100%;
+    max-width: 380px;
+    height: 380px;
+  }
+
+  .brand-art-tagline {
+    font-size: 1.6rem;
+  }
+
+  .split-form-panel {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .centered-card-container {
+    padding: 48px 24px;
+  }
+
+  .centered-card-title {
+    font-size: 1.85rem;
+  }
+}
