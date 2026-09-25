@@ -786,12 +786,7 @@ export default function BriefsApp() {
               {resolvedCount} of {briefs.length} processed
             </p>
           )}
-          <p className="max-w-sm text-xs leading-relaxed text-neutral-300">
-            Briefs are queued behind any AI calls already running. This batch
-            won&apos;t be skipped — they run a few at a time until every brief
-            is done.
-          </p>
-        </div>
+          </div>
       )}
 
       {stage === "stalled" && (
