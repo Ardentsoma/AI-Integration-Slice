@@ -85,15 +85,20 @@ Return only a single JSON object that matches the schema exactly. Do not include
 
 You will be given a structured project outline that an AI assistant extracted from a raw client brief. Expand every part of it into a fuller, client-ready version the designer can confidently share back with their client. Keep the same structure; write the content, not a description of the content.
 
-Return ONLY a single JSON object that matches the SAME schema as the input outline:
-- projectName: a working title derived from the brief.
-- summary: a polished 3-4 sentence plain-language recap.
-- goals: an array of concrete, outcome-focused statements the client will recognize.
+Return ONLY a single JSON object that matches the SAME schema as the input outline, with these exact key names and types:
+- projectName: a string — a working title derived from the brief.
+- summary: a string — a polished 3-4 sentence plain-language recap.
+- goals: an array of strings — concrete, outcome-focused statements the client will recognize.
 - deliverables: an array of { name, description }, with each description being 2-3 complete sentences describing exactly what the client receives.
-- timeline: an array of phases, each with phase, duration, start, end, tasks (expanded into clear, specific steps), and dependsOn.
-- budgetNotes: any budget figure, range, or constraint, stated plainly.
-- assumptions: what this outline implicitly assumes.
-- openQuestions: a short list of clarifying questions the designer still needs answered.
+- timeline: an array of phases, each an object with phase (string), duration (string), start (string), end (string), tasks (array of strings, expanded into clear specific steps), and dependsOn (array of strings).
+- budgetNotes: an array of strings — any budget figure, range, or constraint, stated plainly, one note per string.
+- assumptions: an array of strings — what this outline implicitly assumes, one assumption per string.
+- openQuestions: an array of strings — clarifying questions the designer still needs answered, one question per string.
+
+Shape rules, because they are what makes the output renderable:
+- All eight keys must be present. Use [] for a section with nothing to say; never leave a key out.
+- goals, budgetNotes, assumptions, openQuestions, tasks and dependsOn are ARRAYS OF STRINGS. Never return a bare string, a sentence wrapped in an object, or a number where one of these belongs.
+- Every array element is a plain string, never an object such as { "note": "..." }.
 
 Do not add facts, prices, commitments, or scope that is not already present in the outline. You are expanding and clarifying — not inventing. Return only the JSON object, no markdown, no commentary, nothing outside it.`,
 
@@ -178,6 +183,18 @@ Do not add facts, prices, commitments, or scope that is not already present in t
     // drifted out of schema; kept terse and imperative.
     strictReminder:
       "STRICT: Your previous response did not match the required JSON schema exactly. Return ONLY valid JSON conforming to the schema, no prose, no markdown fences.",
+  },
+
+  followUp: {
+    // Same shape as extraction: one retry after a validation failure, so a
+    // single drifted response (e.g. a section returned as a bare string
+    // instead of an array) doesn't permanently fail the user's action.
+    maxRetries: 1,
+    // Appended to the system prompt on the retry. Names the exact mistake
+    // seen in the wild — array sections collapsing to a string — because the
+    // generic version above did not stop it.
+    strictReminder:
+      "STRICT: Your previous response did not match the required JSON schema. Return ONLY a single valid JSON object with all eight keys. goals, budgetNotes, assumptions, openQuestions, tasks and dependsOn must each be an ARRAY OF STRINGS (use [] when there is nothing to say) — never a bare string, number or object. No prose, no markdown fences, nothing outside the JSON object.",
   },
 } as const;
 

@@ -2,6 +2,7 @@ import "server-only";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
+import type { ZodError } from "zod";
 import { aiConfig } from "./config";
 import {
   EXTRACTION_JSON_SCHEMA,
@@ -237,6 +238,17 @@ async function withTransientRetry<T>(
   throw lastErr;
 }
 
+/** Aggregates the failing paths for a clear, honest error message. Includes
+ * each issue's own reason, not just the field path — "budgetNotes" alone
+ * can't distinguish an omitted section from one returned as a string, and
+ * that difference is the whole diagnosis. */
+function describeSchemaIssues(error: ZodError): string {
+  return error.issues
+    .slice(0, 5)
+    .map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`)
+    .join("; ");
+}
+
 /** Role 1 — extraction. Calls Gemini in JSON mode and validates the result
  * against the Zod outline schema. Throws InvalidResponseError when the model
  * returns malformed/off-schema output so the caller can decide to retry.
@@ -293,13 +305,10 @@ export async function extractOutlineFromBrief(
 
       const parsed = outlineSchema.safeParse(parseJsonObject(text));
       if (!parsed.success) {
-        // Aggregate the failing paths for a clear, honest error message.
-        const paths = parsed.error.issues
-          .slice(0, 5)
-          .map((issue) => issue.path.join(".") || "(root)")
-          .join(", ");
         throw new InvalidResponseError(
-          `Gemini's response did not match the outline schema (missing/invalid: ${paths}).`
+          `Gemini's response did not match the outline schema (missing/invalid: ${describeSchemaIssues(
+            parsed.error
+          )}).`
         );
       }
 
@@ -318,16 +327,22 @@ export async function extractOutlineFromBrief(
 
 /** Role 2 — follow-up action. Runs the requested action (e.g. "expand") on a
  * finished outline via DeepSeek and returns the expanded brief as the same
- * structured Outline as extraction, plus the model used. */
+ * structured Outline as extraction, plus the model used. `strict` appends the
+ * configured reminder to the system prompt for a retry after schema drift. */
 export async function runFollowUpAction(
   outline: Outline,
-  action: string
+  action: string,
+  opts: { strict: boolean }
 ): Promise<{ outline: Outline; model: string }> {
   const cfg = aiConfig.providers.deepseek;
   const instruction = FOLLOW_UP_ACTION_INSTRUCTIONS[action];
   if (!instruction) {
     throw new InvalidResponseError(`Unknown follow-up action: ${action}`);
   }
+
+  const systemPrompt = opts.strict
+    ? `${FOLLOW_UP_SYSTEM_PROMPT}\n\n${aiConfig.followUp.strictReminder}`
+    : FOLLOW_UP_SYSTEM_PROMPT;
 
   const client = getDeepSeekClient();
   const completion = await withTransientRetry("deepseek follow-up", () =>
@@ -341,10 +356,13 @@ export async function runFollowUpAction(
             // DeepSeek (like OpenAI) supports JSON-mode output; combined with
             // the prompt demanding the exact outline schema this returns
             // structured data, not markdown, so rendering/export both work
-            // with the same Outline shape used for extraction.
+            // with the same Outline shape used for extraction. Note that
+            // json_object only guarantees valid JSON — it does not enforce the
+            // schema, which is why the system prompt spells out every field's
+            // type and the result is validated by outlineSchema below.
             response_format: { type: "json_object" },
             messages: [
-              { role: "system", content: FOLLOW_UP_SYSTEM_PROMPT },
+              { role: "system", content: systemPrompt },
               {
                 role: "user",
                 content: `${instruction}\n\nOUTLINE:\n${JSON.stringify(outline, null, 2)}`,
@@ -358,22 +376,28 @@ export async function runFollowUpAction(
     )
   );
 
-  const content = completion.choices[0]?.message?.content ?? "";
+  const choice = completion.choices[0];
+  const content = choice?.message?.content ?? "";
   if (!content.trim()) {
     throw new InvalidResponseError(
       "DeepSeek returned an empty response. Please try again."
     );
   }
 
+  // A response stopped at the token ceiling is truncated JSON, which fails
+  // validation with a misleading "(root)" path — name the real cause.
+  if (choice?.finish_reason === "length") {
+    throw new InvalidResponseError(
+      `DeepSeek's response was cut off at the ${cfg.maxOutputTokens}-token limit, so the brief came back incomplete. Please try again.`
+    );
+  }
+
   const parsed = outlineSchema.safeParse(parseJsonObject(content));
   if (!parsed.success) {
-    // Aggregate the failing paths for a clear, honest error message.
-    const paths = parsed.error.issues
-      .slice(0, 5)
-      .map((issue) => issue.path.join(".") || "(root)")
-      .join(", ");
     throw new InvalidResponseError(
-      `DeepSeek's expanded brief did not match the outline schema (missing/invalid: ${paths}).`
+      `DeepSeek's expanded brief did not match the outline schema (missing/invalid: ${describeSchemaIssues(
+        parsed.error
+      )}).`
     );
   }
 

@@ -184,16 +184,49 @@ export async function runFollowUpJob(
       },
     });
 
-    const expanded = await runFollowUpAction(outline, action);
+    let expanded: Outline | null = null;
+    let usedModel: string | null = null;
+    for (
+      let attempt = 1;
+      attempt <= aiConfig.followUp.maxRetries + 1;
+      attempt += 1
+    ) {
+      attempts = attempt;
+      await prisma.job.update({ where: { id: jobId }, data: { attempts } });
+      try {
+        const result = await runFollowUpAction(outline, action, {
+          strict: attempt > 1,
+        });
+        expanded = result.outline;
+        usedModel = result.model;
+        break;
+      } catch (err) {
+        // Schema drift -> retry once with the strict reminder appended; other
+        // errors (timeout/provider) surface immediately as honest failures.
+        if (
+          err instanceof InvalidResponseError &&
+          attempt <= aiConfig.followUp.maxRetries
+        ) {
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    if (!expanded) {
+      throw new InvalidResponseError(
+        "The expanded brief could not be parsed into a valid outline after retrying."
+      );
+    }
 
     await prisma.job.update({
       where: { id: jobId },
       data: {
         status: "done",
-        resultJson: JSON.stringify(expanded.outline),
+        resultJson: JSON.stringify(expanded),
         attempts,
         provider: "deepseek",
-        model: expanded.model,
+        model: usedModel,
         processingStage: null,
         finishedAt: new Date(),
       },
