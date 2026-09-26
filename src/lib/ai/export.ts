@@ -148,9 +148,6 @@ export async function renderOutlinePdf(outline: Outline): Promise<Uint8Array> {
     }
   };
 
-  draw(outline.projectName, bold, 20);
-  y -= 6;
-
   const heading = (text: string) => {
     y -= 8;
     draw(text, bold, 13, rgb(0.65, 0.23, 0.23));
